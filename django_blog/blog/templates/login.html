@@ -1,0 +1,27 @@
+{% extends 'base.html' %}
+{% block title %} Login {% endblock %}
+
+{% block content %}
+
+    <form method = "POST" style = "text-align: center;">
+        {% csrf_token %}
+        
+    </br>
+        {{ form.username.label_tag }}
+        {{ form.username }}</br></br>
+        {% if form.username.errors %}
+            <p>{{ form.username.errors }}</p>
+        {% endif %}
+
+        {{ form.password.label_tag }}
+        {{ form.password }}</br></br>
+        {% if form.password.errors %}
+            <p>{{ form.password.errors }}</p>
+        {% endif %}
+
+        <button type = "submit" >Login</button>
+
+    </form>
+
+
+{% endblock %}

@@ -1,0 +1,35 @@
+{% extends 'base.html' %}
+{% block title %} Signup {% endblock %}
+
+{% block content %}
+    
+    <form method = "POST" style = "text-align:center;" >
+        {% csrf_token %}</br></br>
+        {{ form.username.label_tag }}
+        {{ form.username }}</br></br>
+        {% if form.username.errors %}
+            <p>{{ form.username.errors }}</p>
+        {% endif %}
+
+        {{ form.email.label_tag }}
+        {{ form.email }}</br></br>
+        {% if form.email.errors %}
+            <p>{{ form.email.errors }}</p>
+        {% endif %}
+
+        {{ form.password1.label_tag }}
+        {{ form.password1 }}</br></br>
+        {% if form.password1.errors %}
+            <p>{{ form.password1.errors }}</p>
+        {% endif %}
+
+        {{ form.password2.label_tag }}
+        {{ form.password2 }} </br></br>
+        {% if form.password2.errors %}
+            <p>{{ form.password2.errors }}</p>
+        {% endif %}
+
+        <button type = "submit">Signup</button>
+    </form>
+
+{% endblock %}
