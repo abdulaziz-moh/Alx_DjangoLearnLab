@@ -2,21 +2,28 @@ from django.shortcuts import render,redirect
 from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.auth import login,logout
 from django.contrib.auth.decorators import login_required
-from . forms import SignupForm
+from . forms import UserRegisterForm
+from django.contrib import messages
+
 # Create your views here.
 
-def register_view(request):
-    if request.method == 'POST':
-        form = SignupForm(request.POST)
-        if form.is_valid():
-            user = form.save() # we may want it for automatic login
+def home(request):
+    return render(request, 'blog/home.html')
 
+def register(request):
+    if request.method == 'POST':
+        form = UserRegisterForm(request.POST)
+        if form.is_valid():
+            form.save()
+
+            username = form.cleaned_data.get('username')
+            messages.success(request, f'Account created for {username}! You can now log in.')
             return redirect('login') # because render will not change the url bar, even after you enter login credentials it will return you to register url(again)
         else:
-            return render(request,'registration.html',{'form':form})
+            return render(request,'blog/register.html',{'form':form})
     else:
-        form = SignupForm()
-    return render(request,'registration.html',{'form':form})
+        form = UserRegisterForm()
+    return render(request,'blog/register.html',{'form':form})
 
 
 def login_view(request):
@@ -27,21 +34,21 @@ def login_view(request):
             user = form.get_user()
             login(request,user)
             
-            return render(request,"base.html")
+            return render(request,"blog/base.html")
         else:
-            return render(request,'login.html',{'form':form})
+            return render(request,'blog/login.html',{'form':form})
         
     else:
         form = AuthenticationForm()
-    return render(request,'login.html',{'form':form})
+    return render(request,'blog/login.html',{'form':form})
 
 def logout_view(request):
     logout(request)
-    return render(request,'logout.html')
+    return render(request,'blog/logout.html')
     
-# @login_required
-def profile_view(request):
-    return render(request,'profile.html')
+@login_required
+def profile(request):
+    return render(request,'blog/profile.html')
 
 def base_view(request):
-    return render(request,'base.html')
+    return render(request,'blog/base.html')
