@@ -21,8 +21,8 @@ class Comment(models.Model):
     post = models.ForeignKey('Post', on_delete=models.CASCADE, related_name='comments')
     author = models.ForeignKey(User, on_delete=models.CASCADE)
     content = models.TextField()
-    created_date = models.DateTimeField(default=timezone.now)
-    tags = models.ManyToManyField(Tag, blank=True, related_name="posts")
+    created_at = models.DateTimeField(auto_now_add=True)   # automatically set when created
+    updated_at = models.DateTimeField(auto_now=True)       # automatically update on save
 
     def __str__(self):
         return f'Comment by {self.author.username} on {self.post.title}'
