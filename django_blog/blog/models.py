@@ -1,6 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import User
 from django.utils import timezone
+from taggit.managers import TaggableManager
 
 # Create your models here.
 
@@ -23,6 +24,7 @@ class Comment(models.Model):
     content = models.TextField()
     created_at = models.DateTimeField(auto_now_add=True)   # automatically set when created
     updated_at = models.DateTimeField(auto_now=True)       # automatically update on save
+    tags = TaggableManager()   # instead of ManyToManyField
 
     def __str__(self):
         return f'Comment by {self.author.username} on {self.post.title}'

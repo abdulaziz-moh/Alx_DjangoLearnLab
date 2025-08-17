@@ -30,10 +30,11 @@
 
 <p><b>Tags:</b>
     {% for tag in post.tags.all %}
-        <a href="{% url 'posts-by-tag' tag.id %}">{{ tag.name }}</a>
+        <a href="{% url 'posts-by-tag' tag.slug %}">{{ tag.name }}</a>
     {% empty %}
         No tags
     {% endfor %}
 </p>
+
 
 {% endblock %}
