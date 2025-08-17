@@ -10,4 +10,22 @@
     <a href="{% url 'post-delete' object.pk %}">Delete</a>
 {% endif %}
 <a href="{% url 'posts' %}">Back to Posts</a>
+
+<h3>Comments</h3>
+{% for comment in post.comments.all %}
+    <p><b>{{ comment.author.username }}</b>: {{ comment.content }} ({{ comment.created_date }})</p>
+{% empty %}
+    <p>No comments yet.</p>
+{% endfor %}
+
+{% if user.is_authenticated %}
+    <form method="post" action="{% url 'add-comment' post.pk %}">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit">Add Comment</button>
+    </form>
+{% else %}
+    <p><a href="{% url 'login' %}">Login</a> to comment.</p>
+{% endif %}
+
 {% endblock %}
