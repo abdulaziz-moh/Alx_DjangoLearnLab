@@ -130,3 +130,40 @@ def search_posts(request):
             Q(title__icontains=query) | Q(content__icontains=query) | Q(tags__name__icontains=query)
         ).distinct()
     return render(request, 'blog/post_list.html', {'object_list': posts, 'query': query})
+
+class CommentCreateView(CreateView):
+    model = Comment
+    form_class = CommentForm
+
+    def form_valid(self, form):
+        post = get_object_or_404(Post, pk=self.kwargs['post_id'])
+        form.instance.post = post
+        form.instance.author = self.request.user
+        return super().form_valid(form)
+
+    def get_success_url(self):
+        return self.object.post.get_absolute_url()
+
+class CommentUpdateView(UpdateView):
+    model = Comment
+    form_class = CommentForm
+
+    def get_success_url(self):
+        return self.object.post.get_absolute_url()
+
+class CommentDeleteView(DeleteView):
+    model = Comment
+
+    def get_success_url(self):
+        return self.object.post.get_absolute_url()
+    
+class SearchResultsView(ListView):
+    model = Post
+    template_name = 'blog/search_results.html'
+    context_object_name = 'posts'
+
+    def get_queryset(self):
+        query = self.request.GET.get('q')
+        return Post.objects.filter(
+            Q(title__icontains=query) | Q(content__icontains=query)
+        ).distinct()    
