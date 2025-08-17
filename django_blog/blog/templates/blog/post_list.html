@@ -1,6 +1,11 @@
 {% extends 'blog/base.html' %}
 {% block title %}All Posts{% endblock %}
 {% block content %}
+<form method="get" action="{% url 'search-posts' %}">
+    <input type="text" name="q" placeholder="Search posts..." value="{{ request.GET.q }}">
+    <button type="submit">Search</button>
+</form>
+
 <h1>All Blog Posts</h1>
 <a href="{% url 'post-create' %}">+ New Post</a>
 <hr>

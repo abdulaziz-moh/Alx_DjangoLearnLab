@@ -7,7 +7,8 @@ from django.contrib import messages
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.urls import reverse_lazy
-from .models import Post, Comment
+from .models import Post, Comment, Tag
+from django.db.models import Q
 
 
 # Create your views here.
@@ -113,3 +114,19 @@ def add_comment(request, pk):
     else:
         form = CommentForm()
     return redirect('post-detail', pk=post.pk)
+
+
+
+def posts_by_tag(request, tag_id):
+    tag = get_object_or_404(Tag, id=tag_id)
+    posts = tag.posts.all()
+    return render(request, 'blog/post_list.html', {'object_list': posts, 'tag': tag})
+
+def search_posts(request):
+    query = request.GET.get('q')
+    posts = Post.objects.all()
+    if query:
+        posts = posts.filter(
+            Q(title__icontains=query) | Q(content__icontains=query) | Q(tags__name__icontains=query)
+        ).distinct()
+    return render(request, 'blog/post_list.html', {'object_list': posts, 'query': query})
