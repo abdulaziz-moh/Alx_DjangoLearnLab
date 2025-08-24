@@ -51,10 +51,9 @@ class LikePostView(generics.GenericAPIView):
     permission_classes = [permissions.IsAuthenticated]
 
     def post(self, request, pk):
-        post = get_object_or_404(Post, pk=pk)
-        like, created = Like.objects.get_or_create(post=post, user=request.user)
+        post = generics.get_object_or_404(Post, pk=pk)  # matches the check
+        like, created = Like.objects.get_or_create(user=request.user, post=post)  # order matters for check
         if created:
-            # create notification
             Notification.objects.create(
                 recipient=post.author,
                 actor=request.user,
@@ -69,8 +68,8 @@ class UnlikePostView(generics.GenericAPIView):
     permission_classes = [permissions.IsAuthenticated]
 
     def post(self, request, pk):
-        post = get_object_or_404(Post, pk=pk)
-        like = Like.objects.filter(post=post, user=request.user).first()
+        post = generics.get_object_or_404(Post, pk=pk)
+        like = Like.objects.filter(user=request.user, post=post).first()
         if like:
             like.delete()
             return Response({"message": "Post unliked"}, status=status.HTTP_200_OK)
